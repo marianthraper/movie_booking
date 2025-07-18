@@ -1,4 +1,4 @@
-#Movie Booking Application
+# Movie Booking Application
 
 It is a web based application for an Movie Booking platform. 
 It enables users to:
