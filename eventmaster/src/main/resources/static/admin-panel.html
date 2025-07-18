@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <h2>Admin Panel</h2>
+    <form id="event-form">
+        <label>Event Name:</label>
+        <input type="text" id="eventName" required>
+
+        <label>Total Seats:</label>
+        <input type="number" id="totalSeats" required>
+
+        <button type="submit">Add Event</button>
+    </form>
+
+    <div id="event-list"></div>
+
+    <script>
+        const form = document.getElementById('event-form');
+        form.onsubmit = (e) => {
+            e.preventDefault();
+            fetch('/api/events', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    eventName: form.eventName.value,
+                    totalSeats: form.totalSeats.value
+                })
+            }).then(() => location.reload());
+        };
+
+        // List all events
+        fetch('/api/events')
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById('event-list');
+                data.forEach(ev => {
+                    const item = document.createElement('div');
+                    item.textContent = `${ev.eventName} - ${ev.totalSeats} seats`;
+                    list.appendChild(item);
+                });
+            });
+    </script>
+</body>
+</html>

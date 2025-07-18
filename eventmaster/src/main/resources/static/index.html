@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoviesNMunchies - Event Booking System</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Add these styles for the auth container */
+        #auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f1;
+        }
+        
+        .auth-wrapper {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        
+        #auth-choices {
+            padding: 2rem;
+        }
+        
+        #auth-choices h2 {
+            margin-bottom: 2rem;
+            color: #221f1f;
+        }
+        
+        #auth-choices button {
+            margin: 0.5rem;
+            width: 200px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Container (shown first) -->
+    <div id="auth-container">
+        <div class="auth-wrapper">
+            <div id="auth-choices">
+                <h2>Welcome to MoviesNMunchies</h2>
+                <button id="login-choice" class="btn-primary">Login</button>
+                <button id="register-choice" class="btn-secondary">Register</button>
+            </div>
+            
+            <!-- Login Section -->
+            <section id="login-section" class="hidden">
+                <h2>Login</h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Email:</label>
+                        <input type="email" id="login-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password:</label>
+                        <input type="password" id="login-password" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Login</button>
+                    <button type="button" id="back-to-choices-from-login" class="btn-secondary">Back</button>
+                </form>
+            </section>
+            
+            <!-- Register Section -->
+            <section id="register-section" class="hidden">
+                <h2>Register</h2>
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="register-name">Full Name:</label>
+                        <input type="text" id="register-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">Email:</label>
+                        <input type="email" id="register-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-phone">Phone:</label>
+                        <input type="tel" id="register-phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Password:</label>
+                        <input type="password" id="register-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-confirm">Confirm Password:</label>
+                        <input type="password" id="register-confirm" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Register</button>
+                    <button type="button" id="back-to-choices-from-register" class="btn-secondary">Back</button>
+                </form>
+            </section>
+        </div>
+    </div>
+
+    <!-- Main App Content (hidden initially) -->
+    <div id="app-content" class="hidden">
+        <header>
+            <div class="container">
+                <h1>MoviesNMunchies</h1>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="active" id="home-link">Home</a></li>
+                        <li><a href="#" id="events-link">Events</a></li>
+                        <li><a href="#" id="bookings-link">My Bookings</a></li>
+                        <li><a href="#" id="logout-link">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <main class="container">
+            <!-- Home Section -->
+            <section id="home-section">
+                <div class="hero">
+                    <h2>Book Tickets for Your Favorite Events</h2>
+                    <p>Discover and book tickets for concerts, movies, sports, and more!</p>
+                    <button id="explore-events" class="btn-primary">Explore Events</button>
+                </div>
+            </section>
+
+            <!-- Events Section -->
+            <section id="events-section" class="hidden">
+                <h2>Upcoming Events</h2>
+                <div id="events-container" class="events-grid"></div>
+            </section>
+
+            <!-- Booking Form Section --> 
+            <section id="booking-section" class="hidden">
+                <h2>Book Tickets</h2>
+                <form id="booking-form">
+                    <input type="hidden" id="event-id">
+                    <div class="form-group">
+                        <label for="event-name">Event:</label>
+                        <input type="text" id="event-name" readonly>
+                    </div>
+                    
+                    <!-- Seat Selection -->
+                    <div id="seat-map-container"></div>
+                    <div id="selected-seats-display">No seats selected</div>
+                    
+                    <div class="form-group">
+                        <label for="total-price">Total Price:</label>
+                        <input type="text" id="total-price" readonly>
+                    </div>
+                    <button type="submit" class="btn-primary">Book Now</button>
+                    <button type="button" id="cancel-booking" class="btn-secondary">Cancel</button>
+                </form>
+            </section>
+
+            <!-- Food Selection Section -->
+            <section id="food-section" class="hidden">
+                <!-- Content will be generated by JavaScript -->
+            </section>
+
+            <!-- Payment Form Section -->
+            <section id="payment-section" class="hidden">
+                <h2>Make Payment</h2>
+                <div id="food-summary"></div>
+                <form id="payment-form">
+                    <input type="hidden" id="booking-id">
+                    <div class="form-group">
+                        <label for="payment-amount">Amount:</label>
+                        <input type="text" id="payment-amount" readonly>
+                    </div>
+                    
+                    <!-- Payment Method Selection -->
+                    <div class="form-group">
+                        <label>Payment Method:</label>
+                        <div class="payment-methods">
+                            <div class="payment-option">
+                                <input type="radio" id="payment-card" name="payment-method" value="CARD" checked>
+                                <label for="payment-card">Credit/Debit Card</label>
+                            </div>
+                            <div class="payment-option">
+                                <input type="radio" id="payment-upi" name="payment-method" value="UPI">
+                                <label for="payment-upi">UPI</label>
+                            </div>
+                            <div class="payment-option">
+                                <input type="radio" id="payment-cash" name="payment-method" value="CASH">
+                                <label for="payment-cash">Cash</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Card Payment Fields -->
+                    <div id="card-payment-fields">
+                        <div class="form-group">
+                            <label for="card-number">Card Number:</label>
+                            <input type="text" id="card-number" placeholder="1234 5678 9012 3456">
+                        </div>
+                        <div class="form-group">
+                            <label for="card-name">Cardholder Name:</label>
+                            <input type="text" id="card-name" placeholder="John Doe">
+                        </div>
+                        <!-- <div class="form-row">
+                            <div class="form-group">
+                                <label for="card-expiry">Expiry Date:</label>
+                                <input type="text" id="card-expiry" placeholder="MM/YY">
+                            </div>
+                            <div class="form-group">
+                                <label for="card-cvv">CVV:</label>
+                                <input type="text" id="card-cvv" placeholder="123">
+                            </div>
+                        </div> -->
+                        <div class="form-group">
+                            <label for="card-password">Password:</label>
+                            <input type="password" id="card-password" placeholder="Enter your card password">
+                        </div>
+                    </div>
+                    
+                    <!-- UPI Payment Fields -->
+                    <div id="upi-payment-fields" class="hidden">
+                        <div class="form-group">
+                            <label for="upi-id">UPI ID:</label>
+                            <input type="text" id="upi-id" placeholder="yourname@upi">
+                        </div>
+                        <div class="form-group">
+                            <label for="upi-pin">UPI PIN:</label>
+                            <input type="password" id="upi-pin" placeholder="Enter UPI PIN">
+                        </div>
+                    </div>
+                    
+                    <!-- Cash Payment Message -->
+                    <div id="cash-payment-message" class="hidden">
+                        <p>Please bring exact change when you arrive at the venue.</p>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Complete Payment</button>
+                    <button type="button" id="cancel-payment" class="btn-secondary">Cancel</button>
+                    <div id="invoice-download-container" style="margin-top: 20px;">
+                        <!-- Button will be inserted here -->
+                    </div>
+                </form>
+            </section>
+
+            <!-- Bookings Section -->
+            <section id="bookings-section" class="hidden">
+                <h2>My Bookings</h2>
+                <div id="bookings-container"></div>
+            </section>
+
+            <!-- Confirmation Modal -->
+            <div id="confirmation-modal" class="modal hidden">
+                <div class="modal-content">
+                    <span class="close-modal">&times;</span>
+                    <h3 id="modal-title">Success!</h3>
+                    <p id="modal-message">Your operation was completed successfully.</p>
+                    <button id="modal-ok" class="btn-primary">OK</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script>
+        // Add this to your existing script.js or here temporarily
+        document.addEventListener('DOMContentLoaded', function() {
+            const authContainer = document.getElementById('auth-container');
+            const appContent = document.getElementById('app-content');
+            const authChoices = document.getElementById('auth-choices');
+            const loginSection = document.getElementById('login-section');
+            const registerSection = document.getElementById('register-section');
+            const loginChoice = document.getElementById('login-choice');
+            const registerChoice = document.getElementById('register-choice');
+            const backToChoicesFromLogin = document.getElementById('back-to-choices-from-login');
+            const backToChoicesFromRegister = document.getElementById('back-to-choices-from-register');
+            const logoutLink = document.getElementById('logout-link');
+
+            // Check if user is already logged in
+            if (localStorage.getItem('currentUser')) {
+                authContainer.classList.add('hidden');
+                appContent.classList.remove('hidden');
+            }
+
+            // Login choice
+            loginChoice.addEventListener('click', () => {
+                authChoices.classList.add('hidden');
+                loginSection.classList.remove('hidden');
+            });
+
+            // Register choice
+            registerChoice.addEventListener('click', () => {
+                authChoices.classList.add('hidden');
+                registerSection.classList.remove('hidden');
+            });
+
+            // Back to choices
+            backToChoicesFromLogin.addEventListener('click', () => {
+                loginSection.classList.add('hidden');
+                authChoices.classList.remove('hidden');
+            });
+
+            backToChoicesFromRegister.addEventListener('click', () => {
+                registerSection.classList.add('hidden');
+                authChoices.classList.remove('hidden');
+            });
+
+            // Logout
+            logoutLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('currentUser');
+                authContainer.classList.remove('hidden');
+                appContent.classList.add('hidden');
+            });
+
+            // Modify your existing login success handler to:
+            function handleLoginSuccess(user) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                authContainer.classList.add('hidden');
+                appContent.classList.remove('hidden');
+                // Reset auth forms
+                loginSection.classList.add('hidden');
+                registerSection.classList.add('hidden');
+                authChoices.classList.remove('hidden');
+                document.getElementById('login-form').reset();
+                document.getElementById('register-form').reset();
+            }
+        });
+    </script>
+</body>
+</html>

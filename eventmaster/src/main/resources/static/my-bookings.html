@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Bookings</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <h2>My Bookings</h2>
+    <div id="booking-list"></div>
+
+    <script>
+        // Fetch user bookings and show them
+        fetch('/api/bookings?userId=1')
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById('booking-list');
+                data.forEach(b => {
+                    const item = document.createElement('div');
+                    item.textContent = `Event: ${b.eventName}, Seats: ${b.numSeats}`;
+                    list.appendChild(item);
+                });
+            });
+    </script>
+</body>
+</html>

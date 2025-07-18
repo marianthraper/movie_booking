@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Invoice</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .invoice-container { max-width: 800px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .logo { max-height: 80px; }
+        h1 { color: #333; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f5f5f5; }
+        .total-row { font-weight: bold; }
+        .footer { margin-top: 40px; text-align: center; font-size: 0.9em; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <div class="header">
+            <h1>MoviesNMunchies</h1>
+            <h1>Booking Invoice</h1>
+            <p id="invoice-date"></p>
+        </div>
+
+        <div id="invoice-details">
+            <!-- Dynamic content will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get data from localStorage
+            const invoiceData = JSON.parse(localStorage.getItem("invoiceData"));
+            
+            if (!invoiceData) {
+                document.getElementById('invoice-details').innerHTML = 
+                    '<p>No invoice data found. Please complete your booking first.</p>';
+                return;
+            }
+
+            // Format date
+            const today = new Date();
+            document.getElementById('invoice-date').textContent = 
+                `Issued: ${today.toLocaleDateString()}`;
+
+            // Build invoice content
+            let html = `
+                <h2>Booking #${invoiceData.bookingId}</h2>
+                
+                <h3>Event Details</h3>
+                <table>
+                    <tr>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total</th>
+                    </tr>
+                    <tr>
+                        <td>Event Seats</td>
+                        <td>${invoiceData.seatCount || 1}</td>
+                        <td>₹${invoiceData.seatPrice.toFixed(2)}</td>
+                        <td>₹${invoiceData.seatPrice.toFixed(2)}</td>
+                    </tr>`;
+
+            // Add food items if any
+            if (invoiceData.food && invoiceData.food.length > 0) {
+                html += `
+                    <tr>
+                        <td colspan="4"><h3>Food & Beverages</h3></td>
+                    </tr>`;
+                
+                invoiceData.food.forEach(item => {
+                    html += `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td>${item.quantity}</td>
+                        <td>₹${item.price.toFixed(2)}</td>
+                        <td>₹${(item.price * item.quantity).toFixed(2)}</td>
+                    </tr>`;
+                });
+            }
+
+            // Add totals
+            html += `
+                    <tr class="total-row">
+                        <td colspan="3">Subtotal</td>
+                        <td>₹${(invoiceData.seatPrice + invoiceData.foodTotal).toFixed(2)}</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="3">Tax (if applicable)</td>
+                        <td>₹0.00</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="3">Grand Total</td>
+                        <td>₹${invoiceData.total.toFixed(2)}</td>
+                    </tr>
+                </table>
+                
+                <div class="footer">
+                    <p>Thank you for your booking!</p>
+                    <p>For any inquiries, please contact support@example.com</p>
+                </div>`;
+
+            document.getElementById('invoice-details').innerHTML = html;
+
+            // Trigger print dialog
+            setTimeout(() => {
+                window.print();
+            }, 500);
+        });
+    </script>
+</body>
+</html>
